@@ -17,7 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-# for TensorFlow r2.4
+# for TensorFlow r2.4 using:
 # from tensorflow.python.keras.applications.resnet import block1, stack1, ResNet
 from keras_applications.resnet_common import ResNet
 from keras_applications import get_submodules_from_kwargs
@@ -103,17 +103,17 @@ def se_resnet_stack1(x, filters, blocks, stride1=2, name=None, **kwargs):
     return x
 
 
-@keras_export('keras.applications.senet.SENet20',
-              'keras.applications.SENet20')
+@keras_export('keras.applications.senet.SE_ResNet_18',
+              'keras.applications.SE_ResNet_18')
 @keras_modules_injection
-def SENet20(include_top=True,
-            weights='imagenet',
-            input_tensor=None,
-            input_shape=None,
-            pooling=None,
-            classes=1000,
-            **kwargs):
-    """Instantiates the SENet20 architecture."""
+def SE_ResNet_18(include_top=True,
+                 weights='imagenet',
+                 input_tensor=None,
+                 input_shape=None,
+                 pooling=None,
+                 classes=1000,
+                 **kwargs):
+    """Instantiates the SE_ResNet_18 architecture."""
 
     def stack_fn(x):
         x = se_resnet_stack1(x, 64, 2, stride1=1, name='conv2')
@@ -121,5 +121,71 @@ def SENet20(include_top=True,
         x = se_resnet_stack1(x, 256, 2, name='conv4')
         return se_resnet_stack1(x, 512, 2, name='conv5')
 
-    return ResNet(stack_fn, False, True, 'SENet20', include_top, weights,
+    return ResNet(stack_fn, False, True, 'SE_ResNet_18', include_top, weights,
+                  input_tensor, input_shape, pooling, classes, **kwargs)
+
+
+@keras_export('keras.applications.senet.SE_ResNet_50',
+              'keras.applications.SE_ResNet_50')
+@keras_modules_injection
+def SE_ResNet_50(include_top=True,
+                 weights='imagenet',
+                 input_tensor=None,
+                 input_shape=None,
+                 pooling=None,
+                 classes=1000,
+                 **kwargs):
+    """Instantiates the SE_ResNet_50 architecture."""
+
+    def stack_fn(x):
+        x = se_resnet_stack1(x, 64, 3, stride1=1, name='conv2')
+        x = se_resnet_stack1(x, 128, 4, name='conv3')
+        x = se_resnet_stack1(x, 256, 6, name='conv4')
+        return se_resnet_stack1(x, 512, 3, name='conv5')
+
+    return ResNet(stack_fn, False, True, 'SE_ResNet_50', include_top, weights,
+                  input_tensor, input_shape, pooling, classes, **kwargs)
+
+
+@keras_export('keras.applications.senet.SE_ResNet_101',
+              'keras.applications.SE_ResNet_101')
+@keras_modules_injection
+def SE_ResNet_101(include_top=True,
+                  weights='imagenet',
+                  input_tensor=None,
+                  input_shape=None,
+                  pooling=None,
+                  classes=1000,
+                  **kwargs):
+    """Instantiates the SE_ResNet_101 architecture."""
+
+    def stack_fn(x):
+        x = se_resnet_stack1(x, 64, 3, stride1=1, name='conv2')
+        x = se_resnet_stack1(x, 128, 4, name='conv3')
+        x = se_resnet_stack1(x, 256, 23, name='conv4')
+        return se_resnet_stack1(x, 512, 3, name='conv5')
+
+    return ResNet(stack_fn, False, True, 'SE_ResNet_101', include_top, weights,
+                  input_tensor, input_shape, pooling, classes, **kwargs)
+
+
+@keras_export('keras.applications.senet.SE_ResNet_152',
+              'keras.applications.SE_ResNet_152')
+@keras_modules_injection
+def SE_ResNet_152(include_top=True,
+                  weights='imagenet',
+                  input_tensor=None,
+                  input_shape=None,
+                  pooling=None,
+                  classes=1000,
+                  **kwargs):
+    """Instantiates the SE_ResNet_152 architecture."""
+
+    def stack_fn(x):
+        x = se_resnet_stack1(x, 64, 3, stride1=1, name='conv2')
+        x = se_resnet_stack1(x, 128, 8, name='conv3')
+        x = se_resnet_stack1(x, 256, 36, name='conv4')
+        return se_resnet_stack1(x, 512, 3, name='conv5')
+
+    return ResNet(stack_fn, False, True, 'SE_ResNet_152', include_top, weights,
                   input_tensor, input_shape, pooling, classes, **kwargs)
