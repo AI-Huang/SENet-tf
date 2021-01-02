@@ -7,11 +7,13 @@
 # @RefLink : https://github.com/keras-team/keras-applications/blob/master/keras_applications/resnet_common.py
 
 """SENet based on tf.keras.applications.resnet
+Expanded the foundation codes in TensorFlow **r2.1** .
 # Reference:
     - [Squeeze-and-Excitation Networks](
         https://arxiv.org/abs/1709.01507) (CVPR 2018)
 # Tested environment:
     tensorflow==2.1.0
+    tensorflow==2.2.0
 """
 from __future__ import absolute_import
 from __future__ import division
@@ -22,7 +24,7 @@ from __future__ import print_function
 from keras_applications.resnet_common import ResNet
 from keras_applications import get_submodules_from_kwargs
 
-from tensorflow.python.keras.applications import keras_modules_injection
+from senet.keras_fn import keras_modules_injection
 from tensorflow.python.util.tf_export import keras_export
 
 from senet.keras_fn.se_block import se_block
