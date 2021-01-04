@@ -78,7 +78,7 @@ def se_resnet_block1(x, filters, kernel_size=3, stride=1, conv_shortcut=True, na
         axis=bn_axis, epsilon=1.001e-5, name=name + '_3_bn')(x)
 
     # add SE Attention here
-    x_attention = se_block(x)
+    x_attention = se_block(x, name=name + '_se_block')
 
     x = layers.Add(name=name + '_add')([shortcut, x_attention])
     x = layers.Activation('relu', name=name + '_out')(x)
