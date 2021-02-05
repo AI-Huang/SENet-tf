@@ -38,6 +38,6 @@ from senet.keras_fn.se_resnet import SE_ResNet_18
 
 ## References
 
-[1]. [Squeeze-and-Excitation Networks](https://arxiv.org/abs/1709.01507)
+[1]Squeeze-and-Excitation Networks, [https://arxiv.org/abs/1709.01507](https://arxiv.org/abs/1709.01507)
 
-[2]. [https://github.com/hujie-frank/SENet](https://github.com/hujie-frank/SENet)
+[2]Code, [https://github.com/hujie-frank/senet](https://github.com/hujie-frank/SENet)
