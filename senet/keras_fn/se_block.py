@@ -10,6 +10,7 @@
         https://arxiv.org/abs/1709.01507) (CVPR 2018)
 # Tested environment:
     tensorflow==2.1.0
+    tensorflow==2.3.0
 """
 from __future__ import absolute_import
 from __future__ import division

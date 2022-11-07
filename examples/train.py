@@ -126,16 +126,21 @@ def cmd_parser():
                         action='store', default=2, help='gamma pamameter for focal loss if it is used.')
 
     # Device
+    parser.add_argument('--no-gpu', action='store_true', default=False,
+                        help='disables CUDA training')
     parser.add_argument('--visible_gpu_from', type=int, dest='visible_gpu_from',
                         action='store', default=0, help='visible_gpu_from, the first visible gpu index set by tf.config.')
-    parser.add_argument('--model_gpu', type=int, dest='model_gpu',
-                        action='store', default=None, help='model_gpu, the number of the model_gpu used for experiment.')
-    parser.add_argument('--train_gpu', type=int, dest='train_gpu',
-                        action='store', default=None, help='train_gpu, the number of the train_gpu used for experiment.')
+    parser.add_argument('--model_gpu_no', type=int, dest='model_gpu_no',
+                        action='store', default=None, help='model_gpu_no, the number of the model_gpu_no used for experiment.')
+    parser.add_argument('--train_gpu_no', type=int, dest='train_gpu_no',
+                        action='store', default=None, help='train_gpu_no, the number of the train_gpu_no used for experiment.')
 
     # Other parameters
     parser.add_argument('--tmp', type=string2bool, dest='tmp',
                         action='store', default=False, help='tmp, if true, the yielding data during the training process will be saved into a temporary directory.')
+    parser.add_argument('--output_dir', type=str, dest='output_dir',
+                        action='store', default=os.path.expanduser(os.path.join(
+                            "~", "Documents", "DeepLearningData", "SENet")), help='output_dir, .')
     parser.add_argument('--date_time', type=str, dest='date_time',
                         action='store', default=None, help='date_time, manually set date time, for model data save path configuration.')
     parser.add_argument('--date_time_first', type=string2bool, dest='date_time_first',
@@ -148,13 +153,18 @@ def cmd_parser():
 
 def main():
     args = cmd_parser()
+    use_gpu = not args.no_gpu
 
-    physical_devices = tf.config.list_physical_devices('GPU')
-    tf.config.set_visible_devices(
-        physical_devices[args.visible_gpu_from:], 'GPU')
-    gpus_memory = get_gpu_memory()
-    available_gpu_indices = get_available_gpu_indices(
-        gpus_memory, required_memory=10240)
+    if use_gpu:
+        physical_devices = tf.config.list_physical_devices('GPU')
+        tf.config.set_visible_devices(
+            physical_devices[args.visible_gpu_from:], 'GPU')
+        gpus_memory = get_gpu_memory()
+        available_gpu_indices = get_available_gpu_indices(
+            gpus_memory, required_memory=10240)
+
+        model_gpu_no = available_gpu_indices[0]
+        train_gpu_no = available_gpu_indices[1]
 
     # Model type
     model_type = args.model_type
@@ -164,14 +174,9 @@ def main():
         print("Invalid model type name, quiting...")
         return -1
 
-    model_gpu = available_gpu_indices[0]
-    train_gpu = available_gpu_indices[1]
-
     # Experiment time
-    if args.date_time == None:
-        date_time = datetime.now().strftime("%Y%m%d-%H%M%S")
-    else:
-        date_time = args.date_time
+    date_time = datetime.now().strftime(
+        "%Y%m%d-%H%M%S") if args.date_time == None else args.date_time
 
     # Prepare dataset
     dataset_name = args.dataset_name
@@ -193,17 +198,17 @@ def main():
 
     # Config paths
     date_time = datetime.now().strftime("%Y%m%d-%H%M%S")
-    # prefix = os.path.join(
-    # "~", "Documents", "DeepLearningData", dataset_name)
-    prefix = "."
-    subfix = os.path.join(model_type, date_time)
-    ckpt_dir = os.path.expanduser(os.path.join(prefix, "ckpts", subfix))
-    log_dir = os.path.expanduser(os.path.join(prefix, "logs", subfix))
+    output_dir = args.output_dir
+    subfix = os.path.join(model_type, dataset_name, date_time)
+    ckpt_dir = os.path.expanduser(os.path.join(output_dir, "ckpts", subfix))
+    log_dir = os.path.expanduser(os.path.join(output_dir, "logs", subfix))
     makedir_exist_ok(ckpt_dir)
     makedir_exist_ok(log_dir)
 
     # Create and compile model
-    with tf.device("/device:GPU:" + str(model_gpu)):
+    
+    device = "/device:GPU:" + str(model_gpu_no) if use_gpu else "/device:CPU:0"
+    with tf.device(device):
         if model_type == "ResNet50":
             model = tf.keras.applications.ResNet50(
                 include_top=True,
@@ -238,7 +243,8 @@ def main():
 
     # Fit model
     epochs = 3 if args.if_fast_run else args.epochs
-    with tf.device("/device:GPU:" + str(train_gpu)):
+    device = "/device:GPU:" + str(train_gpu_no) if use_gpu else "/device:CPU:0"
+    with tf.device(device):
         model.fit(
             train_images,
             train_labels,
