@@ -3,12 +3,12 @@
 # @Date    : Jan-02-21 20:43
 # @Author  : Kan HUANG (kan.huang@connect.ust.hk)
 
-import tensorflow as tf
+from tensorflow.keras.utils import plot_model
 from tensorflow.python.keras import keras_parameterized
 from tensorflow.python.platform import test
-from tensorflow.keras.utils import plot_model
 
-from senet.keras_fn.se_resnet import SE_ResNet_18, SE_ResNet_50, SE_ResNet_101, SE_ResNet_152
+from senet.keras_fn.se_resnet import (SE_ResNet_18, SE_ResNet_50,
+                                      SE_ResNet_101, SE_ResNet_152)
 
 
 class TestModelArchitectures(keras_parameterized.TestCase):
