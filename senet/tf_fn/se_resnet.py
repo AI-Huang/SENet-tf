@@ -23,11 +23,11 @@ from __future__ import print_function
 # from tensorflow.python.keras.applications.resnet import block1, stack1, ResNet
 from keras_applications.resnet_common import ResNet
 from keras_applications import get_submodules_from_kwargs
-
-from senet.keras_fn import keras_modules_injection
+from senet.tf_fn.se_block import se_block
+from senet.tf_fn import keras_modules_injection
 from tensorflow.python.util.tf_export import keras_export
 
-from senet.keras_fn.se_block import se_block
+
 
 backend = None
 layers = None

@@ -19,7 +19,7 @@ from tensorflow.keras.layers import (AveragePooling2D, Dense,
                                      GlobalAveragePooling2D)
 
 
-def se_block(input_, reduction_ratio=16, name=None, **kwargs):
+def se_block(input_, reduction_ratio=16, name="se_block", **kwargs):
     """A SENet block implementation with Keras functional API
     Input:
         input_: 2D feature maps with shape (H, W, C)
